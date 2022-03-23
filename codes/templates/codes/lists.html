@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="mb-3 text-2xl border-indigo-500 border-l-4">
+        <span class="ml-3">Lists</span>
+    </div>
+    <div>
+        <div class="mb-3 xl:w-full">
+            <input type="text" name="search" class="form-control block w-full px-3 py-1 text-base font-normal text-gray-700
+                    bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out
+                    m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                   placeholder="Search Title"
+                   autocomplete="off"
+            />
+        </div>
+        <div class="flex flex-wrap gap-1">
+            <button class="border-indigo-500 border px-2">
+                All
+            </button>
+            <button class="border-indigo-500 border px-2 text-indigo-500">
+                Javascript
+            </button>
+            <button class="border-indigo-500 border px-2">
+                Javascript
+            </button>
+            <button class="border-indigo-500 border px-2">
+                Javascript
+            </button>
+            <button class="border-indigo-500 border px-2">
+                Javascript
+            </button>
+            <button class="border-indigo-500 border px-2">
+                Javascript
+            </button>
+            <button class="border-indigo-500 border px-2">
+                Javascript
+            </button>
+            <button class="border-indigo-500 border px-2">
+                Javascript
+            </button>
+        </div>
+        <div class="mt-2">
+            <button type="button" class="inline-block px-4 py-1 bg-indigo-500 text-white font-medium text-sm rounded hover:bg-indigo-400 focus:bg-indigo-500 active:bg-indigo-400">
+                Filter <i class="fa-solid fa-filter"></i>
+            </button>
+        </div>
+        <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="overflow-hidden">
+                    <table class="min-w-full">
+                        <tbody>
+                        <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                                <h3>Sorting Algorithm</h3>
+                                <div class="text-sm">Javascript</div>
+                            </td>
+                        </tr>
+                        <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                                <h3>Sorting Algorithm</h3>
+                                <div class="text-sm">Javascript, fds</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end">
+            <nav>
+                <ul class="flex list-style-none">
+                    <li class="disabled"><a
+                            class="relative block py-1 px-3 border-0 bg-transparent outline-none rounded-full text-gray-500"
+                            href="#" tabindex="-1" aria-disabled="true">Previous</a></li>
+                    <li>
+                        <a class="ml-1 relative block py-1 px-3 border-0 bg-transparent outline-none rounded-full text-gray-800 hover:text-gray-800 hover:bg-gray-200"
+                            href="#">1</a></li>
+                    <li><a
+                            class="ml-1 relative block py-1 px-3 border-0 bg-indigo-500 outline-none rounded-full text-white hover:bg-indigo-400"
+                            href="#">2</a></li>
+                    <li>
+                        <a class="ml-1 relative block py-1 px-3 border-0 bg-transparent outline-none rounded-full text-gray-800 hover:text-gray-800 hover:bg-gray-200"
+                           href="#">3</a></li>
+                    <li><a
+                            class="ml-1 relative block py-1 px-3 border-0 bg-transparent outline-none rounded-full text-gray-800 hover:text-gray-800 hover:bg-gray-200"
+                            href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock %}

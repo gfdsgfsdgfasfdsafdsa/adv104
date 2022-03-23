@@ -1,0 +1,19 @@
+<nav class="bg-white drop-shadow-md h-52 col-span-3">
+    <ul class="px-6 pb-20 py-10">
+        <li>
+            <a href="" class="{% if nav_active == 'new-category' %}
+                border-indigo-500 bg-gray-200 border-l-4
+                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">New Category</a>
+        </li>
+        <li>
+            <a href="{% url 'new-code' %}" class="{% if nav_active == 'new-code' %}
+                border-indigo-500 bg-gray-200 border-l-4
+                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">New Code</a>
+        </li>
+        <li>
+            <a href="{% url 'lists' %}" class="{% if nav_active == 'lists' %}
+                border-indigo-500 bg-gray-200 border-l-4
+                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">List</a>
+        </li>
+    </ul>
+</nav>
