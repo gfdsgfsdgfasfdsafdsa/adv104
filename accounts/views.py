@@ -2,8 +2,6 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
-def home(request):
-    return render(request, 'accounts/home.html')
 
 def register(request):
     return render(request, 'accounts/register.html')
@@ -23,6 +21,8 @@ def user_login(request):
         else:
             messages.info(request, 'Username/Password is incorrect.')
             return render(request, 'accounts/login.html')
+    elif request.user.is_authenticated:
+        return redirect('lists')
 
     return render(request, 'accounts/login.html')
 

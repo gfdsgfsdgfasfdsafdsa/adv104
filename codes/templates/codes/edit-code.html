@@ -1,8 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <nav class="rounded-md w-full mb-2">
+        <ol class="list-reset flex">
+            <li><a href="{% url 'lists' %}" class="text-blue-600 hover:text-blue-700">Lists</a></li>
+            <li><span class="text-gray-500 mx-2">/</span></li>
+            <li><a href="{% url 'single-code' pk=pk %}" class="text-blue-600 hover:text-blue-700">Code</a></li>
+            <li><span class="text-gray-500 mx-2">/</span></li>
+            <li class="text-gray-500">Edit</li>
+        </ol>
+    </nav>
     <div class="mb-3 text-2xl border-indigo-500 border-l-4">
-        <span class="ml-3">New Code <></span>
+        <span class="ml-3">Edit Code <></span>
     </div>
     <form method="POST" class="mt-4" onsubmit="disableButton()">
         {% csrf_token %}
@@ -30,24 +39,21 @@
                 {{ form.media }}
             </div>
             <!-- For Editing -->
-            <!--
-            <div class="mt-10">
-                <input type="text" name="infos[]" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
-                        bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out
-                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                       placeholder="Info"
-                />
-                <textarea type="text" name="codes[]" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
-                        bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out
-                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none mt-3"
-                          placeholder="Enter Your Code"
-                          rows="8"
-                ></textarea>
-                <div class="flex justify-end">
-                    <button class="text-sm text-rose-500">Remove</button>
+            {% for code in codes %}
+                <div id="code-{{ forloop.counter }}">
+                    <div class="mt-10">
+                        <div class="text-sm mt-2 flex justify-between">
+                            <span>Code:</span>
+                            <button type="button" onclick="removeCodeElement({{ forloop.counter }})">
+                                <i class="text-sm text-rose-500 fa-solid fa-circle-minus text-lg"></i>
+                            </button>
+                        </div>
+                        <input type="text" name="infos[]" value="{{ code.title }}" class="w-full text-sm px-3 py-1 border border-solid rounded focus:border-blue-600 focus:outline-none" autocomplete="off" placeholder="Info(optional)"/>
+                        <textarea required type="text" name="codes[]" autocomplete="off" class="w-full text-sm px-3 py-1 border border-solid rounded focus:bg-white focus:border-blue-600 focus:outline-none mt-3" placeholder="Enter Your Code" rows="8">
+{{ code.code }}</textarea>
+                    </div>
                 </div>
-            </div>
-            -->
+            {% endfor %}
         </div>
         <div class="flex space-x-2 justify-end mt-12">
             <button type="button" onclick="newCodeElement()"
@@ -61,21 +67,21 @@
         </div>
     </form>
     <script>
-        let codeId = 0
+        let codeId = {{ code_cnt }}
 
         function removeCodeElement(codeId) {
-            let codeInput = document.getElementById(codeId)
+            let codeInput = document.getElementById(`code-${codeId}`)
             codeInput.remove()
         }
 
         function newCodeElement() {
+            codeId++
             let newForm = document.getElementById('new-code-form')
             let newDiv = document.createElement("div");
-            newDiv.setAttribute('id', codeId)
+            newDiv.setAttribute('id', `code-${codeId}`)
             newDiv.setAttribute('class', 'mt-10')
-            newDiv.innerHTML= '<div class="mt-10"><div class="text-sm mt-2 flex justify-between"><span>Code:</span><button onclick="removeCodeElement('+codeId+')"><i class="text-sm text-rose-500 fa-solid fa-circle-minus text-lg"></i></button></div><input type="text" name="infos[]" class="w-full text-sm px-3 py-1 border border-solid rounded focus:border-blue-600 focus:outline-none" autocomplete="off" placeholder="Info(optional)"/><textarea required type="text" name="codes[]" autocomplete="off" class="w-full text-sm px-3 py-1 border border-solid rounded focus:bg-white focus:border-blue-600 focus:outline-none mt-3" placeholder="Enter Your Code" rows="8"></textarea></div>'
+            newDiv.innerHTML= '<div class="mt-10"><div class="text-sm mt-2 flex justify-between"><span>Code:</span><button type="button" onclick="removeCodeElement('+codeId+')"><i class="text-sm text-rose-500 fa-solid fa-circle-minus text-lg"></i></button></div><input type="text" name="infos[]" class="w-full text-sm px-3 py-1 border border-solid rounded focus:border-blue-600 focus:outline-none" autocomplete="off" placeholder="Info(optional)"/><textarea required type="text" name="codes[]" autocomplete="off" class="w-full text-sm px-3 py-1 border border-solid rounded focus:bg-white focus:border-blue-600 focus:outline-none mt-3" placeholder="Enter Your Code" rows="8"></textarea></div>'
             newForm.appendChild(newDiv)
-            codeId++
         }
 
         function disableButton() {

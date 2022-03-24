@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="bg-green-100 rounded py-2 px-4 mt-2 text-sm text-green-700 mb-2">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <nav class="rounded-md w-full mb-2">
+        <ol class="list-reset flex">
+            <li><a href="{% url 'lists' %}" class="text-blue-600 hover:text-blue-700">Lists</a></li>
+            <li><span class="text-gray-500 mx-2">/</span></li>
+            <li class="text-gray-500">Code</li>
+        </ol>
+    </nav>
+    <div class="flex justify-end mb-2">
+        <a href="{% url 'single-code-edit' pk=info.id %}" class="inline-block px-4 py-1 bg-indigo-500 text-white font-medium text-sm rounded hover:bg-indigo-400 focus:bg-indigo-500 active:bg-indigo-400">
+            Edit <i class="fa-solid fa-pen-to-square"></i>
+        </a>
+    </div>
+    <div class="mb-3 text-lg border-indigo-500 border-l-4 bg-gray-50 py-2">
+        <div class="ml-3">
+            {{ info.title }}
+            <div class="text-sm">
+                <span>Category: </span>
+                {% for category in info.category.all %}
+                    <span>{{ category }}, </span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="ck-body mt-6">
+        {{ info.body|safe }}
+    </div>
+    <div>
+        {% for code in codes %}
+            <div class="mt-2">{{ code.title }}</div>
+
+            <div class="relative">
+                <div class="flex justify-end absolute -top-4 right-2 tooltip">
+                    <button
+                            onclick="clipboard({{ code.id }})"
+                            onmouseout="handleMouseOutClipboard({{ code.id }})"
+                    >
+                        <i class="fa-solid fa-copy text-indigo-500 text-2xl"></i>
+                    </button>
+                    <span class="tooltiptext" id="tooltip-{{ code.id }}">Copy to clipboard</span>
+                </div>
+                <div class="code-bg">
+                    <div class="px-6 py-0">
+                        <div class="hidden" id="code-{{ code.id }}">{{ code.code }}</div>
+                        <pre>
+                            <code>
+{{ code.code }}
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+    <script>hljs.highlightAll()</script>
+    <script>
+        function clipboard(id) {
+            let copyText = document.getElementById(`code-${id}`);
+
+            let tooltip = document.getElementById(`tooltip-${id}`);
+            tooltip.innerHTML = "Copied";
+
+            let text = copyText.innerText.replace(/&gt;/g, '>').replace(/&lt;/g ,'<')
+            navigator.clipboard.writeText(text);
+
+        }
+        function handleMouseOutClipboard(id){
+            let tooltip = document.getElementById(`tooltip-${id}`);
+            tooltip.innerHTML = "Copy to clipboard";
+        }
+    </script>
+{% endblock %}

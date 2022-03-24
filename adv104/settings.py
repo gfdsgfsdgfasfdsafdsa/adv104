@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ntipjl=u=a3if)+ojm--+45(-b&@chlf+-*z7ir15%78g-@0kz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -40,12 +40,27 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'accounts',
+    'ckeditor',
     'codes',
     'tailwind',
     'theme',
     'django_browser_reload',
     'fontawesomefree',
 ]
+
+CKEDITOR_CONFIGS = {
+   'default': {
+       'toolbar_Full': [
+            ['Styles', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
+            ['Image', 'Flash', 'HorizontalRule'],
+            ['TextColor', 'BGColor'],
+            ['Smiley', 'SpecialChar'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Maximize'],
+        ],
+        "removePlugins": "exportpdf",
+   },
+}
 
 TAILWIND_APP_NAME = 'theme'
 
@@ -141,3 +156,5 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+

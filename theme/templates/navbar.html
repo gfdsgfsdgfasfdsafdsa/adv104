@@ -1,19 +1,30 @@
-<nav class="bg-white drop-shadow-md h-52 col-span-3">
-    <ul class="px-6 pb-20 py-10">
+<nav class="bg-white border-2 h-72 col-span-3 sticky top-2">
+    <ul class="px-6 pb-20 py-10 pt-5">
+        <li class="py-2 text-sm">
+            Menu
+        </li>
         <li>
-            <a href="" class="{% if nav_active == 'new-category' %}
+            <a href="{% url 'new-category' %}" class="{% if nav_active == 'new-category' %}
                 border-indigo-500 bg-gray-200 border-l-4
                 {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">New Category</a>
         </li>
         <li>
             <a href="{% url 'new-code' %}" class="{% if nav_active == 'new-code' %}
                 border-indigo-500 bg-gray-200 border-l-4
-                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">New Code</a>
+                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">New Code <></a>
         </li>
         <li>
             <a href="{% url 'lists' %}" class="{% if nav_active == 'lists' %}
                 border-indigo-500 bg-gray-200 border-l-4
-                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">List</a>
+                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">Lists</a>
+        </li>
+        <li class="py-2 text-sm">
+            Settings <i class="fa-solid fa-gears text-indigo-500"></i>
+        </li>
+        <li>
+            <a href="{% url 'lists' %}" class="{% if nav_active == 'account' %}
+                border-indigo-500 bg-gray-200 border-l-4
+                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">Account</a>
         </li>
     </ul>
 </nav>
