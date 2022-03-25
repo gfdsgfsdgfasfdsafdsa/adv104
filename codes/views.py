@@ -80,7 +80,7 @@ def category_list(request):
     categories = Category.objects.filter(user=request.user)
 
     page = request.GET.get('page', 1)
-    paginator = Paginator(categories, 10)
+    paginator = Paginator(categories, 15)
     try:
         categories_paginated = paginator.page(page)
     except PageNotAnInteger:
@@ -88,11 +88,11 @@ def category_list(request):
     except EmptyPage:
         categories_paginated = paginator.page(paginator.num_pages)
 
-    url = '?search='
+    url = ''
     context = {
         'nav_active': 'category',
         'lists': categories_paginated,
-        'pagination_url': url + '&page='
+        'pagination_url': url + '?page='
     }
     return render(request, 'category/lists.html', context)
 
@@ -101,7 +101,7 @@ def category_list(request):
 def new_code(request):
 
     if request.method == "POST":
-        form = AllCodesForm(request.POST)
+        form = AllCodesForm(request.POST, user=request.user)
         if form.is_valid():
             title = form.cleaned_data['title']
             categories = form.cleaned_data['category']
@@ -124,12 +124,12 @@ def new_code(request):
                         title=infos[i],
                         code=code
                     )
-                form = AllCodesForm()
+                form = AllCodesForm(user=request.user)
                 messages.success(request, title + ' has been added.')
             else:
                 messages.error(request, 'Please enter at least 1 code.')
     else:
-        form = AllCodesForm()
+        form = AllCodesForm(user=request.user)
 
     context = {
         'nav_active': 'new-code',
@@ -200,7 +200,7 @@ def single_code_edit(request, pk):
     codes = Codes.objects.filter(all=all_codes)
 
     if request.method == "POST":
-        form = AllCodesForm(request.POST)
+        form = AllCodesForm(request.POST, user=request.user)
         if form.is_valid():
             title = form.cleaned_data['title']
             categories = form.cleaned_data['category']
@@ -227,7 +227,7 @@ def single_code_edit(request, pk):
             else:
                 messages.error(request, 'Please enter at least 1 code.')
     else:
-        form = AllCodesForm(instance=all_codes)
+        form = AllCodesForm(instance=all_codes, user=request.user)
 
     context = {
         'pk': pk,
