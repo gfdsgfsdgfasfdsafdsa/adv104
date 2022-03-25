@@ -13,3 +13,13 @@ class AllCodesForm(forms.ModelForm):
             'category': forms.SelectMultiple(attrs={'class': 'rounded w-full text-sm'})
         }
 
+class CategoryForm(forms.ModelForm):
+
+    class Meta:
+        model = Category
+        fields = ['name']
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'w-full px-3 py-1 rounded text-sm', 'autocomplete': 'off'}),
+        }
+

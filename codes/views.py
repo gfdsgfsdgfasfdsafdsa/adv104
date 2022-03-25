@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import Http404
 from django.shortcuts import render, redirect
-from .forms import AllCodesForm, Codes, AllCodes, Category
+from .forms import AllCodesForm, Codes, AllCodes, Category, CategoryForm
 
 
 @login_required
@@ -12,7 +12,71 @@ def home(request):
 
 
 @login_required
+def category_new(request):
+
+    if request.method == "POST":
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            if Category.objects.filter(name__contains=name, user=request.user):
+                messages.error(request,
+                                 message='Category ' + name + ' already exist.')
+            else:
+                Category.objects.create(
+                    user=request.user,
+                    name=name
+                )
+                messages.success(request,
+                                 message=name + ' has been saved.')
+                form = CategoryForm()
+    else:
+        form = CategoryForm()
+
+
+    context = {
+        'nav_active': 'category',
+        'form': form,
+    }
+    return render(request, 'category/new.html', context)
+
+
+@login_required
+def category_edit(request, pk):
+    category = Category.objects.get(pk=pk)
+
+    if request.method == "POST":
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            if Category.objects.filter(name__contains=name, user=request.user):
+                messages.error(request,
+                               message='Category ' + name + ' already exist.')
+            else:
+                category.name = name
+                category.save()
+                messages.success(request,
+                                 message=name + ' has been updated.')
+    else:
+        form = CategoryForm(instance=category)
+
+    context = {
+        'nav_active': 'category',
+        'form': form,
+    }
+    return render(request, 'category/edit.html', context)
+
+@login_required
 def category_list(request):
+    if request.method == "POST":
+        delete = request.POST.get('delete')
+        if delete:
+            try:
+                category = Category.objects.get(id=delete)
+                category.delete()
+                messages.success(request, category.name + ' has been successfully deleted.')
+            except Category.DoesNotExist:
+                messages.error(request, 'Failed to delete category.')
+
     categories = Category.objects.filter(user=request.user)
 
     page = request.GET.get('page', 1)

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <nav class="rounded-md w-full mb-2">
+        <ol class="list-reset flex">
+            <li><a href="{% url 'category-list' %}" class="text-blue-600 hover:text-blue-700">Categories</a></li>
+            <li><span class="text-gray-500 mx-2">/</span></li>
+            <li class="text-gray-500">New</li>
+        </ol>
+    </nav>
+    <div class="mb-3 text-2xl border-indigo-500 border-l-4">
+        <span class="ml-3">New Category</span>
+    </div>
+    <form method="POST" class="mt-4">
+        {% csrf_token %}
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="bg-red-100 rounded py-2 px-4 mt-2 text-sm text-red-700">
+                        {{ message }}
+                    </div>
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="bg-green-100 rounded py-2 px-4 mt-2 text-sm text-green-700">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% if form.name.errors %}
+            {% for error in form.name.errors %}
+                <div class="bg-red-100 rounded py-2 px-4 mt-2 text-sm text-red-700">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <p class="text-sm mt-2 mb-2">Enter Category Name:</p>
+        {{ form.name }}
+        <div class="flex space-x-2 justify-end mt-3">
+            <button type="submit"
+                    class="inline-block px-6 py-2 bg-indigo-500 text-white font-medium text-xs rounded hover:bg-indigo-400 focus:bg-indigo-500 active:bg-indigo-400">
+                Save
+            </button>
+        </div>
+    </form>
+{% endblock %}
