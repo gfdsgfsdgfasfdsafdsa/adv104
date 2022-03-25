@@ -1,18 +1,23 @@
 {% extends 'accounts/main.html' %}
 
 {% block content %}
-    <div class="flex items-center justify-center min-h-screen bg-gray-100">
-        <div class="px-8 py-6 mx-4 mt-4 text-left bg-white shadow-lg md:w-1/3 lg:w-1/3 sm:w-1/3">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="px-8 py-6 text-left bg-white shadow-lg md:w-1/3 lg:w-1/3 w-full">
             <h3 class="text-2xl font-bold text-center">Register</h3>
             <form action="">
                 <div class="mt-4">
                     <div>
-                        <label class="block" for="Name">Name</label>
-                            <input type="text" placeholder="Name"
+                        <label class="block">First Name</label>
+                            <input type="text" placeholder="First Name"
                                    class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
                     </div>
                     <div class="mt-4">
-                        <label class="block" for="email">Email</label>
+                        <label class="block">Last Name</label>
+                        <input type="text" placeholder="Last Name"
+                               class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                    </div>
+                    <div class="mt-4">
+                        <label class="block">Email</label>
                             <input type="text" placeholder="Email"
                                    class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
                     </div>
