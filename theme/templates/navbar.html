@@ -4,9 +4,9 @@
             Menu
         </li>
         <li>
-            <a href="{% url 'new-category' %}" class="{% if nav_active == 'new-category' %}
+            <a href="{% url 'category-list' %}" class="{% if nav_active == 'category' %}
                 border-indigo-500 bg-gray-200 border-l-4
-                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">New Category</a>
+                {% else %}border-l-4 border-transparent{% endif %} pl-3 flex items-center py-4 px-10 h-10 text-sm">Category</a>
         </li>
         <li>
             <a href="{% url 'new-code' %}" class="{% if nav_active == 'new-code' %}

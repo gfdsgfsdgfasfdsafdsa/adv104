@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import Http404
 from django.shortcuts import render, redirect
 from .forms import AllCodesForm, Codes, AllCodes, Category
@@ -11,8 +12,25 @@ def home(request):
 
 
 @login_required
-def category_page(request):
-    return render(request, 'errors/404.html')
+def category_list(request):
+    categories = Category.objects.filter(user=request.user)
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(categories, 10)
+    try:
+        categories_paginated = paginator.page(page)
+    except PageNotAnInteger:
+        categories_paginated = paginator.page(1)
+    except EmptyPage:
+        categories_paginated = paginator.page(paginator.num_pages)
+
+    url = '?search='
+    context = {
+        'nav_active': 'category',
+        'lists': categories_paginated,
+        'pagination_url': url + '&page='
+    }
+    return render(request, 'category/lists.html', context)
 
 
 @login_required
@@ -59,12 +77,38 @@ def new_code(request):
 @login_required
 def lists(request):
     all_codes = AllCodes.objects.filter(user=request.user)
+
+    url = '?search='
+    searched = request.GET.get('search', '')
+    filtered = request.GET.getlist('f[]')
+    if searched:
+        all_codes = all_codes.filter(title__contains=searched)
+        s = searched.split(' ')
+        url += '%20'.join(s)
+    if filtered:
+        all_codes = all_codes.filter(category__name__in=filtered)
+        for f in filtered:
+            value = f.split(' ')
+            url += '&f%5B%5D=' + '%20'.join(value)
+
     categories = Category.objects.filter(user=request.user)
+    page = request.GET.get('page', 1)
+    # (obj, no of objects to display)
+    paginator = Paginator(all_codes, 10)
+    try:
+        all_codes_paginated = paginator.page(page)
+    except PageNotAnInteger:
+        all_codes_paginated = paginator.page(1)
+    except EmptyPage:
+        all_codes_paginated = paginator.page(paginator.num_pages)
 
     context = {
         'nav_active': 'lists',
-        'lists': all_codes,
+        'lists': all_codes_paginated,
         'categories': categories,
+        'searched': searched,
+        'filtered': ','.join(filtered),
+        'pagination_url': url + '&page=',
     }
     return render(request, 'codes/lists.html', context)
 
@@ -114,7 +158,7 @@ def single_code_edit(request, pk):
                 all_codes.category.set(categories)
                 all_codes.body = body
                 all_codes.save()
-                messages.success(request, 'Success fully updated.')
+                messages.success(request, 'Successfully updated.')
                 return redirect("single-code", pk=pk)
             else:
                 messages.error(request, 'Please enter at least 1 code.')
@@ -122,7 +166,7 @@ def single_code_edit(request, pk):
         form = AllCodesForm(instance=all_codes)
 
     context = {
-        'pk':pk,
+        'pk': pk,
         'form': form,
         'codes': codes,
         'code_cnt': len(codes),

@@ -5,28 +5,36 @@
         <span class="ml-3">Lists</span>
     </div>
     <div>
-        <div class="mb-3 xl:w-full">
-            <input type="text" name="search" class="text-sm w-full px-3 py-1 border border-solid border-gray-300 rounded m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                   placeholder="Search Title"
-                   autocomplete="off"
-            />
-        </div>
-        <div class="flex flex-wrap gap-1">
-            <button class="border-indigo-700 border px-2 text-indigo-700 text-sm">
-                All
-            </button>
-            {% for category in categories %}
-                <button class="border-indigo-800 border px-2 text-indigo-800 text-sm">
-                    {{ category.name }}
+        <form method="GET">
+            <div class="mb-3 xl:w-full">
+                <input type="text" name="search" value="{{ searched }}" class="text-sm w-full px-3 py-1 border border-solid rounded m-0 focus:border-blue-600 focus:outline-none"
+                       placeholder="Search Title"
+                       autocomplete="off"
+                />
+            </div>
+            <div id="filtered">
+            </div>
+            <div class="flex flex-wrap gap-1">
+                <a href="{% url 'lists' %}" class="border-indigo-700 border px-2 text-indigo-700 text-sm">
+                    All
+                </a>
+                {% for category in categories %}
+                    <button
+                            type="button"
+                            id="{{ category.name }}"
+                            onclick="filter('{{ category.name }}')"
+                            class="border-indigo-800 border px-2 text-indigo-800 text-sm">
+                        {{ category.name }}
+                    </button>
+                {% endfor %}
+            </div>
+            <div class="mt-2">
+                <button type="submit" class="inline-block px-4 py-1 bg-indigo-500 text-white font-medium text-sm rounded hover:bg-indigo-400 focus:bg-indigo-500 active:bg-indigo-400">
+                    Filter <i class="fa-solid fa-filter"></i>
                 </button>
-            {% endfor %}
-        </div>
-        <div class="mt-2">
-            <button type="button" class="inline-block px-4 py-1 bg-indigo-500 text-white font-medium text-sm rounded hover:bg-indigo-400 focus:bg-indigo-500 active:bg-indigo-400">
-                Filter <i class="fa-solid fa-filter"></i>
-            </button>
-        </div>
-        <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+            </div>
+        </form>
+        <div class="overflow-x-auto sm:-mx-6 lg:-mx-8 mt-6">
             <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
                     <table class="min-w-full">
@@ -34,15 +42,20 @@
                         {% for list in lists %}
                             <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                 <td class="px-6 py-1 whitespace-nowrap text-sm">
-                                    <a href="{% url 'single-code' pk=list.id %}">
+                                    <a href="{% url 'single-code' pk=list.id %}" class="flex justify-between flex-wrap">
                                         <h3>{{ list.title }}</h3>
                                         <div class="text-sm">
-                                            Category:
                                             {% for category in list.category.all %}
                                                 <span>{{ category }}, </span>
                                             {% endfor %}
                                         </div>
                                     </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                                <td class="px-6 py-1 whitespace-nowrap text-sm">
+                                    <h3>No data</h3>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -54,23 +67,118 @@
         <div class="flex justify-end">
             <nav>
                 <ul class="flex list-style-none">
-                    <li class="disabled"><a
-                            class="relative block text-sm py-1 px-3 border-0 bg-transparent outline-none rounded text-gray-500"
-                            href="#" tabindex="-1" aria-disabled="true">Previous</a></li>
-                    <li>
-                        <a class="ml-1 relative text-sm block py-1 px-3 border-0 bg-transparent outline-none rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200"
-                            href="#">1</a></li>
-                    <li><a
-                            class="ml-1 relative text-sm block py-1 px-3 border-0 bg-indigo-600 outline-none rounded text-white hover:bg-indigo-400"
-                            href="#">2</a></li>
-                    <li>
-                        <a class="ml-1 relative text-sm block py-1 px-3 border-0 bg-transparent outline-none rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200"
-                           href="#">3</a></li>
-                    <li><a
-                            class="ml-1 relative text-sm block py-1 px-3 border-0 bg-transparent outline-none rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200"
-                            href="#">Next</a></li>
+                    {% if lists.has_previous %}
+                        <li class="disabled">
+                            <a class="relative block text-sm py-1 px-3 border-0 bg-transparent outline-none"
+                               href="{{ pagination_url }}{{ lists.previous_page_number }}" tabindex="-1" aria-disabled="true">
+                                <span>&laquo; </span>
+                                Previous
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a class="relative block text-sm py-1 px-3 border-0 bg-transparent outline-none text-gray-500"
+                                href="#" tabindex="-1" aria-disabled="true">
+                                <span>&laquo; </span>
+                                Previous
+                            </a>
+                        </li>
+                    {% endif %}
+                {% for i in lists.paginator.page_range %}
+                    {% if lists.number == i %}
+                        <li>
+                            <a class="ml-1 relative text-sm block py-1 px-3 border-0 bg-indigo-500 outline-none text-white hover:bg-indigo-400"
+                                    href="{{ pagination_url }}{{ i }}">
+                               {{ i }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a class="ml-1 relative text-sm block py-1 px-3 border-0 bg-transparent outline-none text-gray-800 hover:text-gray-800 hover:bg-gray-200"
+                               href="{{ pagination_url }}{{ i }}">
+                                {{ i }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                    {% if lists.has_next %}
+                        <li>
+                            <a class="relative block text-sm py-1 px-3 border-0 bg-transparent outline-none"
+                               href="{{ pagination_url }}&page={{ lists.next_page_number }}" tabindex="-1" aria-disabled="true">
+                                Next
+                                <span> &raquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a class="relative block text-sm py-1 px-3 border-0 bg-transparent outline-none text-gray-500"
+                               href="#" tabindex="-1" aria-disabled="true">
+                                Next
+                                <span> &raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </nav>
         </div>
     </div>
+
+    <script>
+        let filterList = "{{ filtered }}"
+        if(!Array.isArray(filterList) && filterList){
+            const filteredEl = document.getElementById('filtered')
+            filterList = filterList.split(',')
+            filterList?.map((name) => {
+                const button = document.getElementById(name)
+                button.setAttribute("class", "border-gray-900 border px-2 text-gray-900 text-sm");
+
+                let newInput = document.createElement("input");
+                newInput.setAttribute('id', `input-${name}`)
+                newInput.setAttribute('type', 'hidden')
+                newInput.setAttribute('name', 'f[]')
+                newInput.setAttribute('value', name)
+                filteredEl.appendChild(newInput)
+                return name
+            })
+        }
+
+        function filter(name){
+            const buttonEl = document.getElementById(name)
+            const filteredEl = document.getElementById('filtered')
+            if(!Array.isArray(filterList) && !filterList){
+                filterList = []
+                filterList.push(name)
+                buttonEl.setAttribute("class", "border-gray-900 border px-2 text-gray-900 text-sm");
+
+                let newInput = document.createElement("input");
+                newInput.setAttribute('id', `input-${name}`)
+                newInput.setAttribute('type', 'hidden')
+                newInput.setAttribute('name', 'f[]')
+                newInput.setAttribute('value', name)
+                filteredEl.appendChild(newInput)
+            }else{
+                if(filterList.includes(name)){
+                    //if includes remove from array
+                    buttonEl.setAttribute("class", "border-indigo-800 border px-2 text-indigo-800 text-sm");
+                    const index = filterList.indexOf(name);
+                    if (index > -1) {
+                        filterList.splice(index, 1)
+                    }
+
+                    let inputEl = document.getElementById(`input-${name}`);
+                    inputEl.remove()
+                }else{
+                    let newInput = document.createElement("input");
+                    newInput.setAttribute('id', `input-${name}`)
+                    newInput.setAttribute('type', 'hidden')
+                    newInput.setAttribute('name', 'f[]')
+                    newInput.setAttribute('value', name)
+                    filteredEl.appendChild(newInput)
+
+                    filterList.push(name)
+                    buttonEl.setAttribute("class", "border-gray-900 border px-2 text-gray-900 text-sm");
+                }
+            }
+        }
+    </script>
 {% endblock %}
