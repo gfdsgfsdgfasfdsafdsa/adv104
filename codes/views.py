@@ -5,12 +5,6 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from .forms import AllCodesForm, Codes, AllCodes, Category, CategoryForm
 
-
-@login_required
-def home(request):
-    return render(request, 'accounts/home.html')
-
-
 @login_required
 def category_new(request):
 
@@ -177,6 +171,7 @@ def lists(request):
     return render(request, 'codes/lists.html', context)
 
 
+@login_required
 def single_code(request, pk):
     try:
         all_codes = AllCodes.objects.get(user=request.user, pk=pk)
@@ -191,6 +186,8 @@ def single_code(request, pk):
     }
     return render(request, 'codes/code.html', context=context)
 
+
+@login_required
 def single_code_edit(request, pk):
 
     try:

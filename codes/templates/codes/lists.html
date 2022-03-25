@@ -130,7 +130,7 @@
             filterList = filterList.split(',')
             filterList?.map((name) => {
                 const button = document.getElementById(name)
-                button.setAttribute("class", "border-gray-900 border px-2 text-gray-900 text-sm");
+                button.setAttribute("class", "border-indigo-500 bg-indigo-500 border px-2 text-white text-sm");
 
                 let newInput = document.createElement("input");
                 newInput.setAttribute('id', `input-${name}`)
@@ -148,7 +148,7 @@
             if(!Array.isArray(filterList) && !filterList){
                 filterList = []
                 filterList.push(name)
-                buttonEl.setAttribute("class", "border-gray-900 border px-2 text-gray-900 text-sm");
+                buttonEl.setAttribute("class", "border-indigo-500 bg-indigo-500 border px-2 text-white text-sm");
 
                 let newInput = document.createElement("input");
                 newInput.setAttribute('id', `input-${name}`)
@@ -176,7 +176,7 @@
                     filteredEl.appendChild(newInput)
 
                     filterList.push(name)
-                    buttonEl.setAttribute("class", "border-gray-900 border px-2 text-gray-900 text-sm");
+                    buttonEl.setAttribute("class", "border-indigo-500 bg-indigo-500 border px-2 text-white text-sm");
                 }
             }
         }

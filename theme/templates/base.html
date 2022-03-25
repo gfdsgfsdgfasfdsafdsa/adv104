@@ -73,7 +73,7 @@
 <body>
     <div class="max-w-screen-lg mx-auto">
         <nav class="flex justify-end items-center py-3 px-3 rounded border-2">
-            <div class="mx-4">Hello, {{ request.user.first_name.title }} {{ request.user.last_name.title }}</div>
+            <div class="mx-4">Hello, {{ request.user.first_name }} {{ request.user.last_name }}</div>
             <a class="px-4 py-1 bg-indigo-500 text-white font-medium text-sm rounded hover:bg-indigo-400 focus:bg-indigo-500 active:bg-indigo-400" href="{% url 'logout' %}">
                 Logout <i class="fa-solid fa-right-from-bracket ml-1"></i>
             </a>
