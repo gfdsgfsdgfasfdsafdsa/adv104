@@ -134,6 +134,16 @@ def new_code(request):
 
 @login_required
 def lists(request):
+    if request.method == "POST":
+        delete = request.POST.get('delete')
+        if delete:
+            try:
+                all_c = AllCodes.objects.get(id=delete)
+                all_c.delete()
+                messages.success(request, all_c.title + '  deleted.')
+            except AllCodes.DoesNotExist:
+                messages.error(request, 'Failed to delete.')
+
     all_codes = AllCodes.objects.filter(user=request.user)
 
     url = '?search='

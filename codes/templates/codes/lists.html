@@ -5,7 +5,7 @@
         <span class="ml-3">Lists</span>
     </div>
     <div>
-        <form method="GET">
+        <form method="GET" class="mb-8">
             <div class="mb-3 xl:w-full">
                 <input type="text" name="search" value="{{ searched }}" class="text-sm w-full px-3 py-1 border border-solid rounded m-0 focus:border-blue-600 focus:outline-none"
                        placeholder="Search Title"
@@ -34,7 +34,20 @@
                 </button>
             </div>
         </form>
-        <div class="overflow-x-auto sm:-mx-6 lg:-mx-8 mt-6">
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="bg-red-100 rounded py-2 px-4 mt-2 text-sm text-red-700">
+                        {{ message }}
+                    </div>
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="bg-green-100 rounded py-2 px-4 mt-2 text-sm text-green-700">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
                     <table class="min-w-full">
@@ -44,10 +57,17 @@
                                 <td class="px-6 py-1 whitespace-nowrap text-sm">
                                     <a href="{% url 'single-code' pk=list.id %}" class="flex justify-between flex-wrap">
                                         <h3>{{ list.title }}</h3>
-                                        <div class="text-sm">
+                                        <div class="text-sm flex flex-wrap">
                                             {% for category in list.category.all %}
                                                 <span>{{ category }}, </span>
                                             {% endfor %}
+                                            <form method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="delete" value="{{ list.id }}">
+                                                <button type="submit" class="ml-3 text-rose-500">
+                                                    Delete <i class="fa-solid fa-trash-can ml-3"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </a>
                                 </td>
