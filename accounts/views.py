@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .forms import UserForm, User, UserPasswordForm
+from .forms import UserForm, User, UserPasswordForm, RegistrationForm
 from django.contrib.auth import update_session_auth_hash
 
 @login_required
@@ -66,13 +66,36 @@ def account_edit(request):
     return render(request, 'accounts/edit.html', context=context)
 
 def register(request):
-    return render(request, 'accounts/register.html')
+    if request.user.is_authenticated:
+        return redirect('lists')
+
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("login")
+        else:
+            if User.objects.filter(email=form.cleaned_data['email']).exists():
+                form.add_error('email', 'Email Already exist.')
+    else:
+        form = RegistrationForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'accounts/register.html', context)
 
 
 def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('lists')
 
+    context = {
+        'username': ''
+    }
     if request.method == "POST":
         username = request.POST.get('username')
+        context['username'] = username
 
         user = authenticate(request, username=username,
                             password=request.POST.get('password'))
@@ -82,14 +105,15 @@ def user_login(request):
             return redirect('lists')
         else:
             messages.info(request, 'Username/Password is incorrect.')
-            return render(request, 'accounts/login.html')
-    elif request.user.is_authenticated:
-        return redirect('lists')
+            return render(request, 'accounts/login.html', context)
 
-    return render(request, 'accounts/login.html')
+    return render(request, 'accounts/login.html', context)
 
 
 def user_logout(request):
     logout(request)
     return redirect('login')
 
+def forgot_password(request):
+
+    return render(request, 'accounts/forgot-password.html')
