@@ -1,6 +1,10 @@
+import secrets
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from .forms import UserForm, User, UserPasswordForm, RegistrationForm
 from django.contrib.auth import update_session_auth_hash
@@ -116,4 +120,38 @@ def user_logout(request):
 
 def forgot_password(request):
 
-    return render(request, 'accounts/forgot-password.html')
+    context = {
+        'username': '',
+        'email': '',
+    }
+    if request.method == "POST":
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        context['email'] = email
+        context['username'] = username
+        try:
+            user = User.objects.get(username=username, email=email)
+        except User.DoesNotExist:
+            user = None
+
+        if user:
+            new_password = secrets.token_urlsafe()
+            user.set_password(new_password)
+            user.save()
+            message = '{}\n{}'.format('Your new password is: ',
+                                      new_password)
+            send_mail(
+                'Forgot Password',
+                message,
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False,
+            )
+            context['email'] = ''
+            context['username'] = ''
+            messages.success(request, 'Your new password has been sent to your email. If not please try again')
+        else:
+            messages.error(request, 'Username/Email is incorrect.')
+            return render(request, 'accounts/forgot-password.html', context)
+
+    return render(request, 'accounts/forgot-password.html', context)
